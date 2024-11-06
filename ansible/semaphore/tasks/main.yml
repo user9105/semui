@@ -1,0 +1,69 @@
+---
+# tasks file for semaphore
+
+- name: "Install xz-utils"
+  ansible.builtin.apt:
+    name: xz-utils
+    state: latest
+
+- name: "Install semaphore"
+  ansible.builtin.apt:
+      deb: "https://github.com/semaphoreui/semaphore/releases/download/v2.10.35/semaphore_2.10.35_linux_amd64.deb"
+      state: present
+
+- name: "create semaphore daemon dir"
+  ansible.builtin.file:
+    path: "/etc/semaphore"
+    mode: 0755
+    owner: semaphore
+    group: semaphore
+    state: directory
+
+- name: "copy files"
+  ansible.builtin.copy:
+    src: "../files/systemd/{{ item }}"
+    dest: "/etc/semaphore/"
+    mode: 0755
+    owner: semaphore
+    group: semaphore
+  loop:
+    - "env"
+    - "runner.service"
+    - "semaphore.service"
+
+- name: "Link "
+  ansible.builtin.file:
+    src: "/etc/semaphore/semaphore.service"
+    dest: "/etc/systemd/system/semaphore.service"
+    state: "link" 
+
+
+- name: "copy config.json from template"
+  ansible.builtin.template:
+    src: "config.json.j2"
+    dest: "/etc/semaphore/config.json"
+    mode: 0644
+    owner: semaphore
+    group: semaphore
+
+    
+- name: "Reload nginx"
+  ansible.builtin.service:
+    name: "nginx"
+    state: "reloaded" 
+
+- name: "systemctl daemon-reload"
+  ansible.builtin.service:
+    daemon_reload: yes
+
+- name: "enable semaphore service"
+  ansible.builtin.service:
+    name: semaphore.service
+    enabled: yes
+
+- name: "start semaphore service"
+  ansible.builtin.service:
+    name: semaphore.service
+    state: started
+
+  

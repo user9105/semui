@@ -1,0 +1,41 @@
+---
+# tasks file for ansible
+- name: "Install python3-pip"
+  ansible.builtin.apt:
+    name: "python3-pip"
+    state: "latest"
+    update_cache: true
+
+- name: "create link for python"
+  ansible.builtin.file:
+      src: "/usr/bin/python3"
+      dest: "/usr/bin/python"
+      state: "link"
+
+- name: "Install virtualenv via pip"
+  ansible.builtin.pip:
+    name: virtualenv
+    executable: pip3
+
+- name: "Create virtual environment and install requirements into it"
+  ansible.builtin.pip:
+    requirements: '/home/semaphore/requirements.txt'
+    virtualenv: '/home/semaphore/venv'
+    state: present  # or 'latest' to upgrade the requirements
+
+- name: "Ensure git installed"
+  ansible.builtin.apt:
+    name: "git"
+    state: "latest"
+    update_cache: true
+
+- name: "Add Ansible PPA"
+  apt_repository:
+    repo: ppa:ansible/ansible
+
+- name: "Install Ansible"
+  ansible.builtin.apt:
+    name: "ansible"
+    state: "latest"
+    update_cache: true
+

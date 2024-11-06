@@ -1,0 +1,46 @@
+---
+# tasks file for nginx
+
+- name: "Install nginx via apt"
+  ansible.builtin.apt:
+    name: "nginx"
+    state: "latest"
+    update_cache: true
+
+- name: "copy open key"
+  ansible.builtin.copy:
+    src: "../files/certs/localhost.crt"
+    dest: "/etc/ssl/certs/localhost.crt"
+    owner: "semaphore"
+    group: "semaphore"
+    mode: "0644"  
+  
+- name: "copy private key"
+  ansible.builtin.copy:
+    src: "../files/certs/localhost.key"
+    dest: "/etc/ssl/private/localhost.key"
+    owner: "root"
+    group: "root"
+    mode: "0700"  
+
+- name: "copy semaphore_nginx.cfg"
+  ansible.builtin.copy:
+    src: "../files/semaphore_nginx.cfg"
+    dest: "/etc/nginx/sites-available/semaphore_nginx.cfg"
+    owner: "semaphore"
+    group: "semaphore"
+    mode: "0644"
+
+- name: "Link folder"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/semaphore_nginx.cfg"
+    dest: "/etc/nginx/sites-enabled/default"
+    state: "link"  
+
+- name: "Reload nginx"
+  ansible.builtin.service:
+    name: "nginx"
+    state: "reloaded" 
+
+
+  

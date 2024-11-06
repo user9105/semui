@@ -1,0 +1,13 @@
+ansible-playbook play_test.yml --vault-id dev@../vault_pass
+
+#to encrypt vault.yml:
+ansible-vault encrypt --vault-id dev@../vault_pass vault.yml
+
+#to generate database access key
+head -c32 /dev/urandom | base64
+
+Postgres pass: dbpassword 
+Semaphore_password: sempassword
+
+#generate ssl certificaate for nginx:
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout localhost.key -out localhost.crt -config /home/vagrant/files/localhost.conf

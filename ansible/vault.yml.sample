@@ -1,0 +1,4 @@
+db_password: "dbpassword"
+semaphore_os_pass: "semospassword"
+semaphore_pass: "sempassword"
+db_access_key_encryption: "gs72mPntFATGJs9qK0pQ0rKtfidlexiMjYCH9gWKhTU="

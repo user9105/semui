@@ -1,0 +1,53 @@
+######################
+# SEMAPHORE PLAYBOOK #
+######################
+---
+- hosts: "semaphore"
+  become: true
+  vars_files:
+    - vault.yml
+
+  vars:
+
+    postgresql_users:
+      - name: semaphore
+        password: "{{ db_password }}"
+        groups: sudo
+      
+    postgresql_databases:
+      - name: semaphore
+        owner: semaphore
+        
+    semaphore_os_user: "semaphore"
+    semaphore_os_password: "{{ semaphore_os_pass }}"
+
+    semaphore_user: "semaphore"
+    semaphore_password: "{{ semaphore_pass }}"
+
+    access_key_encryption: "{{ db_access_key_encryption }}"  
+
+##########################################################
+
+  pre_tasks:
+    - name: create OS user semaphore
+      ansible.builtin.user:
+        name: "{{ semaphore_os_user }}"
+        password: "{{ semaphore_os_password | password_hash('sha512') }}"
+        state: present
+        
+    - name: Copy requirements.txt
+      ansible.builtin.copy:
+        src: "../files/requirements.txt"
+        dest: "/home/semaphore/"
+        owner: "semaphore"
+        group: "semaphore"
+        mode: "0644"
+
+###########################################################
+
+  roles:
+  - geerlingguy.postgresql
+  - ansible
+  - nginx
+  - semaphore
+  
