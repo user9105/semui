@@ -1,4 +1,4 @@
-ansible-playbook play_test.yml --vault-id dev@../vault_pass
+ansible-playbook play_semaphore.yml --vault-id dev@../vault_pass
 
 #to encrypt vault.yml:
 ansible-vault encrypt --vault-id dev@../vault_pass vault.yml
