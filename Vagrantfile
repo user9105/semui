@@ -26,7 +26,6 @@ Vagrant.configure("2") do |config|
   config.vm.define "semaphore_ubuntu" do |server_semaphore|
     server_semaphore.vm.box = "ubuntu/focal64"
     server_semaphore.vm.hostname = "semaphore"
-#    server_semaphore.vbguest.auto_update = false
     server_semaphore.vm.network "private_network", ip: "192.168.56.41"
     server_semaphore.vm.provision "shell", inline: <<-SHELL
       chmod 644 /home/vagrant/.ssh/vagrant_test.pub
